@@ -3,7 +3,6 @@ module Styles = {
 
   let text =
       (
-        character: option(Character.t),
         customColorHex: option(string),
         italicize: bool,
         bold: bool,
@@ -18,12 +17,7 @@ module Styles = {
         `hex(
           Belt.Option.getWithDefault(
             customColorHex,
-            switch (character) {
-            | Some(Yksi) => CommonStyles.yksiHex
-            | Some(Kaxig) => CommonStyles.kaxigHex
-            | Some(Kolme) => CommonStyles.kolmeHex
-            | None => CommonStyles.defaultTextHex
-            },
+            CommonStyles.defaultTextHex,
           ),
         ),
       ),
@@ -33,20 +27,12 @@ module Styles = {
 [@react.component]
 let make =
     (
-      ~character: option(Character.t)=?,
       ~customColorHex: option(string)=?,
       ~italicize=false,
       ~bold=false,
       ~display=`inline,
       ~children: string,
     ) =>
-  <span
-    className={Styles.text(
-      character,
-      customColorHex,
-      italicize,
-      bold,
-      display,
-    )}>
+  <span className={Styles.text(customColorHex, italicize, bold, display)}>
     {React.string(children)}
   </span>;

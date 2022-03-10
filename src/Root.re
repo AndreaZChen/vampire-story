@@ -3,45 +3,21 @@ module Styles = {
 
   let fadeInTime = 1000;
 
-  let rootWrapper = (~backgroundImage as bg: Background.t) => {
-    let baseStyle =
-      style([
-        overflow(`hidden),
-        position(`absolute),
-        display(`flex),
-        alignItems(`center),
-        justifyContent(`flexStart),
-        flexDirection(`column),
-        width(`percent(100.)),
-        height(`percent(100.)),
-        bottom(`px(0)),
-        right(`px(0)),
-        transitionDuration(500),
-      ]);
-
-    merge([
-      baseStyle,
-      switch (bg) {
-      | Normal =>
-        style([backgroundColor(`hex(CommonStyles.defaultBackgroundHex))])
-      | CyberCafe =>
-        style([
-          backgroundImage(`url("assets/backgrounds/cafe.jpeg")),
-          backgroundSize(`cover),
-        ])
-      | Museum =>
-        style([
-          backgroundImage(`url("assets/backgrounds/museum.jpg")),
-          backgroundSize(`cover),
-        ])
-      | Arcade =>
-        style([
-          backgroundImage(`url("assets/backgrounds/deep_fried_arcade.png")),
-          backgroundSize(`cover),
-        ])
-      },
+  let rootWrapper =
+    style([
+      overflow(`hidden),
+      position(`absolute),
+      display(`flex),
+      alignItems(`center),
+      justifyContent(`flexStart),
+      flexDirection(`column),
+      width(`percent(100.)),
+      height(`percent(100.)),
+      bottom(`px(0)),
+      right(`px(0)),
+      transitionDuration(500),
+      backgroundColor(`hex(CommonStyles.defaultBackgroundHex)),
     ]);
-  };
 
   let buttonArea =
     style([
@@ -171,92 +147,6 @@ module Styles = {
   );
 };
 
-module CharacterImage = {
-  [@react.component]
-  let make = (~src: string, ~isFaded: bool, ~animationClass: string) =>
-    <img
-      className={
-        Styles.image(~isFaded)
-        ++ " animate__animated animate__"
-        ++ animationClass
-      }
-      src
-    />;
-};
-
-module BatteryIndicator = {
-  module Styles = {
-    open Css;
-
-    let image =
-      style([
-        position(`absolute),
-        zIndex(CommonStyles.dialogZIndex - 1),
-        top(`px(5)),
-        right(`px(5)),
-        userSelect(`none),
-        margin(`px(10)),
-        media(CommonStyles.mediaSizeLarge, [width(`px(100))]),
-        media(CommonStyles.mediaSizeMiddle, [width(`px(75))]),
-        media(CommonStyles.mediaSizeSmall, [width(`px(50))]),
-        animationIterationCount(`count(10)),
-      ]);
-  };
-
-  [@react.component]
-  let make = (~isBatteryLow: bool) =>
-    <img
-      className={
-        Styles.image
-        ++ (isBatteryLow ? " animate__animated animate__flash" : "")
-      }
-      src={
-        isBatteryLow
-          ? "assets/characters/battery_low.png"
-          : "assets/characters/battery_full.png"
-      }
-    />;
-};
-
-module BlackOverlay = {
-  module Styles = {
-    open Css;
-
-    let fadeIn =
-      keyframes([
-        (0, [opacity(0.)]),
-        (50, [opacity(1.)]),
-        (100, [opacity(1.)]),
-      ]);
-
-    let fadeOut =
-      keyframes([
-        (0, [opacity(1.)]),
-        (50, [opacity(0.)]),
-        (100, [opacity(0.)]),
-      ]);
-
-    let overlay = (~isHalfwayDone: bool) =>
-      style([
-        backgroundColor(`hex("000000")),
-        opacity(isHalfwayDone ? 1. : 0.),
-        animationName(isHalfwayDone ? fadeOut : fadeIn),
-        animationDuration(CommonStyles.overlayTransitionMs * 2),
-        zIndex(CommonStyles.overlayZIndex),
-        width(`percent(100.)),
-        height(`percent(100.)),
-        position(`fixed),
-        top(`zero),
-        left(`zero),
-      ]);
-  };
-
-  [@react.component]
-  let make = (~isHalfwayDone: bool) => {
-    <div className={Styles.overlay(~isHalfwayDone)} />;
-  };
-};
-
 [@react.component]
 let make = () => {
   let (globalState, globalDispatch) =
@@ -284,12 +174,6 @@ let make = () => {
   let onCloseHelpDialog =
     React.useCallback1(
       () => globalDispatch(HelpDialogClosed),
-      [|globalDispatch|],
-    );
-
-  let onDialogueClicked =
-    React.useCallback1(
-      _ => globalDispatch(ScriptAdvanced),
       [|globalDispatch|],
     );
 
@@ -356,81 +240,31 @@ let make = () => {
     [|globalDispatch|],
   );
 
-  let isDisplayingChoices = Belt.Option.isSome(globalState.displayedChoices);
-
-  <div
-    className={Styles.rootWrapper(
-      ~backgroundImage=globalState.backgroundImage,
-    )}>
-    <div className=Styles.buttonArea>
-      <HelpButton globalDispatch />
-      <MuteButton isSoundMuted={globalState.isSoundMuted} globalDispatch />
-    </div>
-    <BatteryIndicator isBatteryLow={globalState.isBatteryLow} />
+  <div className=Styles.rootWrapper>
+    <div className=Styles.buttonArea> <HelpButton globalDispatch /> </div>
     <ScrollToTopProvider value=scrollToTop>
-      {globalState.isIntroDone
-         ? <FadeInDiv className=Styles.imageDiv fadeInTime=3000>
-             <CharacterImage
-               isFaded=isDisplayingChoices
-               animationClass={globalState.yksiAnimationClass}
-               src={Character.getImage(Yksi, globalState.yksiExpression)}
-             />
-             <CharacterImage
-               isFaded=isDisplayingChoices
-               animationClass={globalState.kaxigAnimationClass}
-               src={Character.getImage(Kaxig, globalState.kaxigExpression)}
-             />
-             <CharacterImage
-               isFaded=isDisplayingChoices
-               animationClass={globalState.kolmeAnimationClass}
-               src={Character.getImage(Kolme, globalState.kolmeExpression)}
-             />
-             <CharacterImage
-               isFaded=isDisplayingChoices
-               animationClass=""
-               src="assets/characters/body.png"
-             />
-             {switch (globalState.displayedChoices) {
-              | Some(choices) =>
-                <div className=Styles.choicesDiv>
-                  {Belt.Array.mapWithIndex(
-                     choices,
-                     (index, choice) => {
-                       let isHighlighted =
-                         switch (globalState.currentHighlightedChoiceIndex) {
-                         | Some(highlightedIndex) => index == highlightedIndex
-                         | None => false
-                         };
-
-                       <FadeInDiv
-                         fadeInTime=Styles.fadeInTime
-                         key={string_of_int(index)}
-                         className={Styles.choiceItem(~isHighlighted)}
-                         onClick={_ => globalDispatch(ChoiceSelected(index))}>
-                         <Text> {"> " ++ choice.text} </Text>
-                       </FadeInDiv>;
-                     },
-                   )
-                   ->React.array}
-                </div>
-              | None => React.null
-              }}
-           </FadeInDiv>
-         : <div className=Styles.introPlaceholder />}
-      <div
-        role="button"
-        className=Styles.dialogueArea
-        onClick=onDialogueClicked
-        ref={ReactDOMRe.Ref.domRef(centralColumnRef)}>
-        {globalState.text}
-      </div>
+      {Belt.Array.mapWithIndex(globalState.displayedNarration, (index, event) =>
+         switch (event) {
+         | Narration(text) =>
+           <p key={string_of_int(index)}> {React.string(text)} </p>
+         | Image(image) =>
+           <img key={string_of_int(index)} src={Image.getImage(image)} />
+         | Choice(_) => React.null
+         }
+       )
+       ->React.array}
+      {switch (globalState.displayedChoices) {
+       | Some(choices) =>
+         Belt.Array.mapWithIndex(choices, (index, choice) =>
+           <button onClick={_ => globalDispatch(ChoiceSelected(index))}>
+             {React.string(choice.text)}
+           </button>
+         )
+         ->React.array
+       | None => React.null
+       }}
     </ScrollToTopProvider>
     {globalState.isShowingHelpDialog
        ? <HelpDialog onClose=onCloseHelpDialog /> : React.null}
-    {globalState.isTransitioningBackground
-       ? <BlackOverlay
-           isHalfwayDone={globalState.isHalfwayDoneTransitioningBackground}
-         />
-       : React.null}
   </div>;
 };
