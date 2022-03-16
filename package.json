@@ -1,31 +1,30 @@
 {
-  "name": "abandoned-dating-sim",
+  "name": "vampire-story",
   "version": "0.1.0",
   "scripts": {
-    "bsb": "bsb -make-world",
-    "start": "bsb -make-world -w -ws _ ",
-    "clean": "bsb -clean-world",
+    "rescript": "rescript build -with-deps",
+    "start": "rescript build -w -ws _ ",
+    "clean": "rescript clean -with-deps",
     "serve": "moduleserve ./ --port 8000",
     "build": "webpack -p"
   },
   "keywords": [
-    "BuckleScript",
-    "ReasonReact",
-    "reason-react"
+    "ReScript",
+    "rescript-react"
   ],
   "author": "Andrea Zonghao Chen",
   "dependencies": {
-    "bs-css": "^11.0.0",
-    "bs-webapi": "^0.15.6",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
-    "reason-react": ">=0.7.0",
-    "reason-react-update": "^1.0.0"
+    "@rescript/react": "0.10.3",
+    "bs-css-emotion": "2.3.0",
+    "rescript-webapi": "0.6.1",
+    "react": "16.8.1",
+    "react-dom": "16.8.1",
+    "rescript-react-update": "5.0.0"
   },
   "devDependencies": {
-    "bs-platform": "^7.0.1",
-    "moduleserve": "^0.9.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "rescript": "9.1.4",
+    "moduleserve": "0.9.0",
+    "webpack": "4.41.5",
+    "webpack-cli": "3.3.10"
   }
 }

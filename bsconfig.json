@@ -1,5 +1,5 @@
 {
-  "name": "dating-sim",
+  "name": "vampire-story",
   "reason": {
     "react-jsx": 3
   },
@@ -21,11 +21,11 @@
   "namespace": true,
   "bs-dependencies": [
     "bs-css",
-    "bs-webapi",
-    "reason-react",
-    "reason-react-update"
+    "bs-css-emotion",
+    "rescript-webapi",
+    "@rescript/react",
+    "rescript-react-update"
   ],
-  "refmt": 3,
   "warnings": {
     "error": "+8"
   }
