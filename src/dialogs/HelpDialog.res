@@ -30,8 +30,6 @@ let make = (~onClose: unit => unit) => {
 
   <Dialog onClose>
     <Text> helpText </Text>
-    <br />
-    <Text customColorHex=CommonStyles.commentHex> "// TODO: add settings? save/load system?" </Text>
     <div className=Styles.buttonsArea>
       <button onClick={_ => onClose()}> {React.string("Close")} </button>
     </div>

@@ -1,9 +1,9 @@
-type t = Default
+type t = ShopPage
 
 let imagesFolder = "assets/images/"
 
 let getImage = image =>
   imagesFolder ++
   switch image {
-  | Default => "default.png"
+  | ShopPage => "shop_page.jpg"
   }

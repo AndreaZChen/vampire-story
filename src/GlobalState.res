@@ -3,10 +3,6 @@ type action =
   | HelpDialogOpened
   | HelpDialogClosed
   | ChoiceSelected(int)
-  | SpacePressed
-  | EnterPressed
-  | ArrowUpPressed
-  | ArrowDownPressed
 
 type t = {
   script: list<Script.event>,
@@ -16,9 +12,7 @@ type t = {
   currentHighlightedChoiceIndex: option<int>,
 }
 
-let textFadeInTime = 1000
-
-let rec reducer = (state: t, action: action): ReactUpdate.update<action, t> =>
+let reducer = (state: t, action: action): ReactUpdate.update<action, t> =>
   switch action {
   | ScriptAdvanced =>
     switch state.script {
@@ -28,6 +22,7 @@ let rec reducer = (state: t, action: action): ReactUpdate.update<action, t> =>
       switch nextEvent {
       | Choice(choices) => ReactUpdate.Update({...state, displayedChoices: Some(choices)})
       | Narration(_)
+      | FormattedNarration(_)
       | Image(_) =>
         ReactUpdate.UpdateWithSideEffects(
           {
@@ -51,6 +46,7 @@ let rec reducer = (state: t, action: action): ReactUpdate.update<action, t> =>
       ReactUpdate.UpdateWithSideEffects(
         {
           ...state,
+          displayedNarration: [],
           displayedChoices: None,
           currentHighlightedChoiceIndex: None,
           script: result,
@@ -64,62 +60,6 @@ let rec reducer = (state: t, action: action): ReactUpdate.update<action, t> =>
     }
   | HelpDialogOpened => ReactUpdate.Update({...state, isShowingHelpDialog: true})
   | HelpDialogClosed => ReactUpdate.Update({...state, isShowingHelpDialog: false})
-  | ArrowUpPressed =>
-    switch state.displayedChoices {
-    | None => ReactUpdate.NoUpdate
-    | Some(choices) =>
-      switch state.currentHighlightedChoiceIndex {
-      | Some(prevIndex) =>
-        ReactUpdate.Update({
-          ...state,
-          currentHighlightedChoiceIndex: Some(
-            mod(prevIndex + Belt.Array.length(choices) - 1, Belt.Array.length(choices)),
-          ),
-        })
-      | None =>
-        ReactUpdate.Update({
-          ...state,
-          currentHighlightedChoiceIndex: Some(Belt.Array.length(choices) - 1),
-        })
-      }
-    }
-  | ArrowDownPressed =>
-    switch state.displayedChoices {
-    | None => ReactUpdate.NoUpdate
-    | Some(choices) =>
-      switch state.currentHighlightedChoiceIndex {
-      | Some(prevIndex) =>
-        ReactUpdate.Update({
-          ...state,
-          currentHighlightedChoiceIndex: Some(mod(prevIndex + 1, Belt.Array.length(choices))),
-        })
-      | None =>
-        ReactUpdate.Update({
-          ...state,
-          currentHighlightedChoiceIndex: Some(0),
-        })
-      }
-    }
-  | SpacePressed =>
-    state.isShowingHelpDialog
-      ? ReactUpdate.NoUpdate
-      : switch (state.displayedChoices, state.currentHighlightedChoiceIndex) {
-        | (None, _)
-        | (_, None) =>
-          reducer(state, ScriptAdvanced)
-        | (Some(_choices), Some(highlightedIndex)) =>
-          reducer(state, ChoiceSelected(highlightedIndex))
-        }
-  | EnterPressed =>
-    state.isShowingHelpDialog
-      ? reducer(state, HelpDialogClosed)
-      : switch (state.displayedChoices, state.currentHighlightedChoiceIndex) {
-        | (None, _)
-        | (_, None) =>
-          reducer(state, ScriptAdvanced)
-        | (Some(_choices), Some(highlightedIndex)) =>
-          reducer(state, ChoiceSelected(highlightedIndex))
-        }
   }
 
 let defaultState = {
