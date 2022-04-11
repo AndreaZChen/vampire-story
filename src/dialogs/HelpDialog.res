@@ -13,13 +13,11 @@ module Styles = {
   })
 }
 
-let helpText = `INSTRUCTIONS:
+let helpText = `This is a piece of mildly interactive fiction about vampires, kink, and love. To proceed through the story, simply click your preferred dialogue option when presented with a choice.
 
-Click/touch inside the text box to advance the text. When presented with a choice, click/touch your preferred option it to select it.
+CAUTION: this work contains many mentions of things that certain audiences might find upsetting. This includes BDSM, vampires, kidnapping, mind control, and probably other things I'm forgetting to mention. The tone of this work is comedic overall, and almost all depictions of sex and violence are meant to be funny rather than graphic, but please proceed at your own risk! You have been warned.
 
-Alternatively, use Space or Enter to advance, and the arrow keys to highlight a choice when prompted.
-
-Ⓒ 2021 Andrea Zonghao Chen`
+Ⓒ 2022 Andrea Zonghao Chen`
 
 @react.component
 let make = (~onClose: unit => unit) => {

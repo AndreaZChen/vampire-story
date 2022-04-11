@@ -3,6 +3,8 @@ module Styles = {
 
   let fadeInTime = 1500
 
+  let paddingAmount = 100
+
   let rootWrapper = style(. [
     overflowX(#hidden),
     overflowY(#auto),
@@ -12,10 +14,13 @@ module Styles = {
     justifyContent(#flexStart),
     flexDirection(#column),
     width(#percent(80.)),
-    height(#percent(80.)),
-    bottom(#px(0)),
-    right(#px(0)),
-    padding(#percent(10.)),
+    height(#calc(#sub, #percent(100.), #px(2 * paddingAmount))),
+    top(#px(0)),
+    left(#px(0)),
+    paddingLeft(#percent(10.)),
+    paddingRight(#percent(10.)),
+    paddingTop(#px(paddingAmount)),
+    paddingBottom(#px(paddingAmount)),
     backgroundColor(#hex(CommonStyles.defaultBackgroundHex)),
   ])
 

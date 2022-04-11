@@ -5,7 +5,7 @@ let rec script: list<Script.event> = list{
 
 A single bare lightbulb hangs from the ceiling, illuminating what I take to be my new prison. My eyes adjust quickly, but there isn't much to see: the room is windowless, and seemingly devoid of furniture save for the chair I find myself strapped into. Beyond an open door, I can see a staircase leading upwards; I must be in a basement, then.
 
-It takes an alarmingly long time for me to notice the woman standing in the corner. Why didn't I notice her immediately? Instinctively I try to move, but something around my wrists and ankles keeps me firmly secured. She laughs softly at my sudden flailing.
+It takes an alarmingly long time for me to spot the woman standing in the corner. Why didn't I notice her immediately? Instinctively I try to move, but something around my wrists and ankles keeps me firmly secured. She laughs softly at my sudden flailing.
 
 A somewhat troubling situation, then.`),
   Choice([
@@ -43,8 +43,29 @@ A cartoonishly wide grin spreads across her face. "You don't know yet," she says
 This response seems to amuse her. She finally leaves the corner she's been lurking in and steps towards me, and I realize she is in fact quite tall. Really, very tall. She leans over me until her face partially obscures the lightbulb dangling above us, and places a cold, clawed hand against my cheek.
 
 "Oh, my idiot darling," she says. "Already you are talking stupid."`),
+  Choice([{text: "Ask her to explain what's going on", result: whatsGoingOnScript}]),
 }
-and whereAmIScript = list{}
+and whereAmIScript = list{
+  Narration(`"Where... where am I?" I ask. My voice is hoarse and weak.
+
+"Your new home," she says. A wide grin spreads across her face, baring two unnaturally sharp fangs. "You will learn to like this place."
+
+"Very ominous," I groan. "So this is less of a for-ransom kidnapping and more of a creepy romantic kidnapping."
+
+This response seems to amuse her. She finally leaves the corner she's been lurking in and steps towards me, and I realize she is in fact quite tall. Really, very tall. She leans over me until her face partially obscures the lightbulb dangling above us, and places a cold, clawed hand against my cheek.
+
+"Not kidnapping," she says. "It was fate that brought you here."`),
+  Choice([
+    {text: "Ask her to explain what's going on", result: whatsGoingOnScript},
+    {text: "I don't think it was fate", result: notFateScript},
+  ]),
+}
+and notFateScript = list{
+  Narration(`"I don't think it was fate," I object hesitantly. "I'm pretty sure I remember you kidnapping me. I was on my way home from the grocery store and you, like, drugged me or something."
+
+She rolls her eyes and curls her lips into a petulant frown. "Hypnosis, not drugs. I give fate a little nudge in right direction, yes?"`),
+  Choice([{text: "So why am I here?", result: whatsGoingOnScript}]),
+}
 and myGroceriesScript = list{
   Narration(`"What... what happened to my groceries?" I ask. My voice is hoarse, but filled with conviction.
 
@@ -59,7 +80,7 @@ She finally leaves the corner she's been lurking in and steps towards me, and I 
 "You will never see them again," she says.`),
   Choice([
     {text: "But really, what happened to my groceries?", result: reallyGroceriesScript},
-    {text: "Why did you kidnap me?", result: whyKidnapScript},
+    {text: "Ask her to explain what's going on", result: whatsGoingOnScript},
   ]),
 }
 and reallyGroceriesScript = list{
@@ -83,10 +104,22 @@ She smirks at me, and whatever momentary awkwardness had come over her seems to 
         </span>
       </p>,
   ),
+  Choice([{text: "So why am I here?", result: whatsGoingOnScript}]),
 }
-and whyKidnapScript = list{}
+and whatsGoingOnScript = list{
+  Narration(`"Look," I say, tugging absentmindedly at my leather restraints, "there's obviously a lot to unpack here. Can we maybe take it from the top?"
+
+Her eyes light up at this, and she runs her fingers through my hair; I feel her sharp claws against my scalp. "Yes," she says, "take it from the top. You are nothing like my ex-husband. Good."
+
+Hmm. Clearly, I am going to have to be more careful with my wording. "What I meant to say was, could you explain what exactly is going on here?"
+
+"Yes, you are confused, little creature of the night," she says. "I show you on my device."
+
+She reaches into a pocket somewhere in her cloak, starts digging for something...`),
+  Choice([{text: "Wait patiently...", result: showPhoneScript}]),
+}
 and showPhoneScript: list<Script.event> = list{
-  Narration(`She pulls out her smartphone, spends some time struggling to unlock it with her claws, mutters under her breath. Then she flips it around and holds the screen up for me to see.
+  Narration(`She pulls out a smartphone, spends some time struggling to unlock it with her claws, mutters under her breath. Then she flips it around and holds the screen up for me to see.
 
 "This is how I found you!" she says excitedly. "It is good, yes?"
 
